@@ -1,0 +1,28 @@
+name: Build macOS Unity dylib
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build dylib
+        run: |
+          clang++ -dynamiclib \
+            native/ApplePlugin.mm \
+            -o libApplePlugin.dylib \
+            -std=c++17 \
+            -fvisibility=hidden
+
+      - name: Upload dylib artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libApplePlugin
+          path: libApplePlugin.dylib
